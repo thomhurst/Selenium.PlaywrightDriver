@@ -1,5 +1,4 @@
 using EnumerableAsyncProcessor.Extensions;
-using Microsoft.Extensions.Logging;
 using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
@@ -32,34 +31,8 @@ public class PackProjectsModule : Module<CommandResult[]>
             await PackV4(context, cancellationToken, projectFile, packageVersion),
             await PackV3(context, cancellationToken, projectFile, packageVersion)
         }.ToArray();
-
-        return await context.Git()
-            .RootDirectory
-            .AssertExists()
-            .GetFiles(f => GetProjectsPredicate(f, context))
-            .SelectAsync(f => PackV4(context, cancellationToken, f, packageVersion), cancellationToken: cancellationToken)
-            .ProcessOneAtATime();
     }
 
-    private bool GetProjectsPredicate(File file, IPipelineContext context)
-    {
-        var path = file.Path;
-        if (!path.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase))
-        {
-            return false;
-        }
-
-        if (path.Contains("Tests", StringComparison.OrdinalIgnoreCase)
-            || path.Contains("Pipeline", StringComparison.OrdinalIgnoreCase)
-            || path.Contains("Example", StringComparison.OrdinalIgnoreCase))
-        {
-            return false;
-        }
-
-        context.Logger.LogInformation("Found File: {File}", path);
-        return true;
-    }
-    
     private static async Task<CommandResult> PackV4(IPipelineContext context, CancellationToken cancellationToken, File projectFile, ModuleResult<string> packageVersion)
     {
         return await context.DotNet().Pack(new DotNetPackOptions

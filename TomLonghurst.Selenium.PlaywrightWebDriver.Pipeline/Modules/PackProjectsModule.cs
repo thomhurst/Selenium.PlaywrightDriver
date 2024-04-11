@@ -53,8 +53,7 @@ public class PackProjectsModule : Module<CommandResult[]>
         {
             ProjectSolution = projectFile.Path,
             Configuration = Configuration.Release,
-            IncludeSource = !projectFile.Path.Contains("Analyzer"),
-            NoRestore = true,
+            IncludeSource = true,
             Properties = new List<KeyValue>
             {
                 ("PackageVersion", packageVersion.Value!),

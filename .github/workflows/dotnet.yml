@@ -15,11 +15,6 @@ on:
         type: boolean
         required: true
         default: false
-      is-alpha:
-        description: Alpha version?    
-        type: boolean
-        required: true
-        default: true
 
 jobs:
   pipeline:
@@ -47,3 +42,4 @@ jobs:
         working-directory: "TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline"
         env:
           NuGet__ApiKey: ${{ github.ref == 'refs/heads/main' && secrets.NUGET__APIKEY || null }}
+          Publish__ShouldPublish: ${{ github.event.inputs.publish-packages }}

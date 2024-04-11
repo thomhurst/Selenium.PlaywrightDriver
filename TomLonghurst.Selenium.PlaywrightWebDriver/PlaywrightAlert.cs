@@ -24,5 +24,11 @@ public class PlaywrightAlert : IAlert
         throw new System.NotImplementedException();
     }
 
+#if SeleniumVersion_3
+    public void SetAuthenticationCredentials(string userName, string password)
+    {
+    }
+#endif
+    
     public string? Text => _playwrightWebDriver._lastAlertText;
 }

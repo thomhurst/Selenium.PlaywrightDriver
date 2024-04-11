@@ -142,7 +142,7 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
 
         if (locator.CountAsync().Synchronously() == 0)
         {
-            throw new NoSuchElementException($"No element found for {by.Mechanism} - {by.Criteria}");
+            throw new NoSuchElementException($"No element found for {by.GetLocatorString()}");
         }
             
         return new PlaywrightWebElement(locator, locatorString);
@@ -226,10 +226,12 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
         return CurrentPage.EvaluateAsync(script, args).Synchronously();
     }
 
+#if SeleniumVersion_4
     public object? ExecuteScript(PinnedScript script, params object[] args)
     {
         return ExecuteScript(script.Source, args);
     }
+#endif
 
     public object? ExecuteAsyncScript(string script, params object[] args)
     {

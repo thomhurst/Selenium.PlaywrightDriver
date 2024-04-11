@@ -20,11 +20,24 @@ public class PackProjectsModule : Module<CommandResult[]>
     protected override async Task<CommandResult[]?> ExecuteAsync(IPipelineContext context, CancellationToken cancellationToken)
     {
         var packageVersion = await GetModule<NugetVersionGeneratorModule>();
+
+        var projectFile = context.Git()
+            .RootDirectory
+            .AssertExists()
+            .FindFile(x => x.NameWithoutExtension == "TomLonghurst.Selenium.PlaywrightWebDriver.csproj")
+            .AssertExists();
+
+        return new List<CommandResult>
+        {
+            await PackV4(context, cancellationToken, projectFile, packageVersion),
+            await PackV3(context, cancellationToken, projectFile, packageVersion)
+        }.ToArray();
+
         return await context.Git()
             .RootDirectory
             .AssertExists()
             .GetFiles(f => GetProjectsPredicate(f, context))
-            .SelectAsync(f => Pack(context, cancellationToken, f, packageVersion), cancellationToken: cancellationToken)
+            .SelectAsync(f => PackV4(context, cancellationToken, f, packageVersion), cancellationToken: cancellationToken)
             .ProcessOneAtATime();
     }
 
@@ -47,7 +60,7 @@ public class PackProjectsModule : Module<CommandResult[]>
         return true;
     }
     
-    private static async Task<CommandResult> Pack(IPipelineContext context, CancellationToken cancellationToken, File projectFile, ModuleResult<string> packageVersion)
+    private static async Task<CommandResult> PackV4(IPipelineContext context, CancellationToken cancellationToken, File projectFile, ModuleResult<string> packageVersion)
     {
         return await context.DotNet().Pack(new DotNetPackOptions
         {
@@ -56,6 +69,23 @@ public class PackProjectsModule : Module<CommandResult[]>
             IncludeSource = true,
             Properties = new List<KeyValue>
             {
+                ("PackageVersion", packageVersion.Value!),
+                ("Version", packageVersion.Value!),
+            },
+        }, cancellationToken);
+    }
+    
+    private static async Task<CommandResult> PackV3(IPipelineContext context, CancellationToken cancellationToken, File projectFile, ModuleResult<string> packageVersion)
+    {
+        return await context.DotNet().Pack(new DotNetPackOptions
+        {
+            ProjectSolution = projectFile.Path,
+            Configuration = Configuration.Release,
+            IncludeSource = true,
+            Properties = new List<KeyValue>
+            {
+                ("SeleniumVersion", "3"),
+                ("PackageId", "TomLonghurst.Selenium.V3.PlaywrightWebDriver"),
                 ("PackageVersion", packageVersion.Value!),
                 ("Version", packageVersion.Value!),
             },

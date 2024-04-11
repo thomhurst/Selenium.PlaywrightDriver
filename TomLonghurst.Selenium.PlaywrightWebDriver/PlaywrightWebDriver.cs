@@ -154,11 +154,12 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
 
         var locator = CurrentFrameLocators.Any()
             ? CurrentFrameLocators.Last().Locator(locatorString)
-            : CurrentPage.Locator(locatorString);;
+            : CurrentPage.Locator(locatorString);
 
-        var playwrightWebElements = locator.AllAsync()
+        var playwrightWebElements = locator
+            .AllAsync()
             .Synchronously()
-            .Select(x => new PlaywrightWebElement(locator, locatorString))
+            .Select(x => new PlaywrightWebElement(x, locatorString))
             .Cast<IWebElement>()
             .ToList();
             

@@ -1,32 +1,30 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Settings;
+using EnumerableAsyncProcessor.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ModularPipelines.Attributes;
 using ModularPipelines.Context;
-using ModularPipelines.Extensions;
-using ModularPipelines.Git.Extensions;
+using ModularPipelines.DotNet.Extensions;
+using ModularPipelines.DotNet.Options;
+using ModularPipelines.Git.Attributes;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
-using ModularPipelines.Enums;
-using ModularPipelines.NuGet.Extensions;
-using ModularPipelines.NuGet.Options;
+using TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Settings;
 
 namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules;
 
 [DependsOn<RunUnitTestsModule>]
 [DependsOn<PackagePathsParserModule>]
+[RunOnlyOnBranch("main")]
 public class UploadPackagesToNugetModule : Module<CommandResult[]>
 {
-    private readonly IOptions<NuGetSettings> _options;
+    private readonly IOptions<NuGetSettings> _nugetSettings;
 
-    public UploadPackagesToNugetModule(IOptions<NuGetSettings> options)
+    public UploadPackagesToNugetModule(IOptions<NuGetSettings> nugetSettings)
     {
-        _options = options;
+        _nugetSettings = nugetSettings;
     }
 
+    /// <inheritdoc/>
     protected override async Task OnBeforeExecute(IPipelineContext context)
     {
         var packagePaths = await GetModule<PackagePathsParserModule>();
@@ -39,44 +37,26 @@ public class UploadPackagesToNugetModule : Module<CommandResult[]>
         await base.OnBeforeExecute(context);
     }
 
-    protected override async Task<SkipDecision> ShouldSkip(IPipelineContext context)
+    /// <inheritdoc/>
+    protected override Task<SkipDecision> ShouldSkip(IPipelineContext context)
     {
-        var gitVersionInfo = await context.Git().Versioning.GetGitVersioningInformation();
-
-        if (gitVersionInfo.BranchName != "main")
-        {
-            return true;
-        }
-        
-        var publishPackages =
-            context.Environment.EnvironmentVariables.GetEnvironmentVariable("PUBLISH_PACKAGES")!;
-
-        if (!bool.TryParse(publishPackages, out var shouldPublishPackages) || !shouldPublishPackages)
-        {
-            return true;
-        }
-
-        return false;
+        return Task.FromResult<SkipDecision>(!_nugetSettings.Value.ShouldPublish);
     }
 
+    /// <inheritdoc/>
     protected override async Task<CommandResult[]?> ExecuteAsync(IPipelineContext context, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(_options.Value.ApiKey);
-
-        var gitVersionInformation = await context.Git().Versioning.GetGitVersioningInformation();
-
-        if (gitVersionInformation.BranchName != "main")
-        {
-            return await NothingAsync();
-        }
+        ArgumentNullException.ThrowIfNull(_nugetSettings.Value.ApiKey);
 
         var packagePaths = await GetModule<PackagePathsParserModule>();
 
-        return await context.NuGet()
-            .UploadPackages(new NuGetUploadOptions(packagePaths.Value!.AsPaths(), new Uri("https://api.nuget.org/v3/index.json"))
+        return await packagePaths.Value!
+            .SelectAsync(async nugetFile => await context.DotNet().Nuget.Push(new DotNetNugetPushOptions
             {
-                ApiKey = _options.Value.ApiKey!,
-                NoSymbols = true
-            });
+                Path = nugetFile,
+                Source = "https://api.nuget.org/v3/index.json",
+                ApiKey = _nugetSettings.Value.ApiKey!,
+            }, cancellationToken), cancellationToken: cancellationToken)
+            .ProcessOneAtATime();
     }
 }

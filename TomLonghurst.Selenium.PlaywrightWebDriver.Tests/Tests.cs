@@ -15,7 +15,7 @@ public class Tests
     {
         await using var driver = await PlaywrightWebDriver.CreateAsync();
 
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "TagName.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "TagName.html");
 
         driver.Close();
         
@@ -27,7 +27,7 @@ public class Tests
     {
         await using var driver = await PlaywrightWebDriver.CreateAsync();
 
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
 
         var idLocatorText = driver.FindElement(By.Id("id1")).Text;
         var classLocatorText = driver.FindElement(By.ClassName("class1")).Text;
@@ -56,7 +56,7 @@ public class Tests
     {
         await using var driver = await PlaywrightWebDriver.CreateAsync();
 
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "TagName.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "TagName.html");
 
         var host = driver.FindElement(By.Id("host"));
         
@@ -68,7 +68,7 @@ public class Tests
     {
         await using var driver = await PlaywrightWebDriver.CreateAsync();
 
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "ShadowDom.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "ShadowDom.html");
 
         var span = driver.FindElement(By.Id("host")).GetShadowRoot().FindElement(By.TagName("span"));
         
@@ -80,7 +80,7 @@ public class Tests
     {
         await using var driver = await PlaywrightWebDriver.CreateAsync();
 
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "NestedFinds.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "NestedFinds.html");
 
         var span = driver.FindElement(By.Id("host"))
             .FindElement(By.ClassName("inner1"))
@@ -95,7 +95,7 @@ public class Tests
     {
         await using var driver = await PlaywrightWebDriver.CreateAsync();
 
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Click.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Click.html");
 
         var originalText = driver.FindElement(By.Id("host")).Text;
             
@@ -113,7 +113,7 @@ public class Tests
     {
         await using var driver = await PlaywrightWebDriver.CreateAsync();
 
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Alert.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Alert.html");
         
         Assert.That(driver.FindElement(By.Id("host")).Text, Is.EqualTo("Foo bar"));
         
@@ -168,7 +168,7 @@ public class Tests
     {
         await using var driver = await PlaywrightWebDriver.CreateAsync();
 
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "FormSubmit.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "FormSubmit.html");
         
         var originalText = driver.FindElement(By.Id("host")).Text;
         
@@ -189,7 +189,7 @@ public class Tests
     {
         await using var driver = await PlaywrightWebDriver.CreateAsync();
 
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "IFrame.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "IFrame.html");
         
         Assert.That(driver.FindElement(By.Id("iframe-root-page1")).Text, Is.EqualTo("Root Page"));
         Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("host")));
@@ -214,7 +214,7 @@ public class Tests
     {
         await using var driver = await PlaywrightWebDriver.CreateAsync();
 
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Windows", "Window1.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Windows", "Window1.html");
         
         var originalText = driver.FindElement(By.Id("host")).Text;
         
@@ -222,7 +222,7 @@ public class Tests
 
         driver.SwitchTo().NewWindow(WindowType.Window);
         
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Windows", "Window2.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Windows", "Window2.html");
         
         var newText = driver.FindElement(By.Id("host"));
         
@@ -254,7 +254,7 @@ public class Tests
     {
         await using var driver = await PlaywrightWebDriver.CreateAsync();
 
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Windows", "Window1.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Windows", "Window1.html");
         
         var originalText = driver.FindElement(By.Id("host")).Text;
         
@@ -262,7 +262,7 @@ public class Tests
 
         driver.SwitchTo().NewWindow(WindowType.Window);
         
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Windows", "Window2.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Windows", "Window2.html");
         
         var newText = driver.FindElement(By.Id("host"));
         
@@ -270,7 +270,7 @@ public class Tests
 
         driver.SwitchTo().NewWindow(WindowType.Window);
         
-        driver.Url = Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Windows", "Window3.html");
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Windows", "Window3.html");
         
         newText = driver.FindElement(By.Id("host"));
         

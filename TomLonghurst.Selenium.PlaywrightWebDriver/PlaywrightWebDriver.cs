@@ -55,6 +55,11 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
         KeyToPage.Add(key, currentPage);
             
         CurrentPage = currentPage;
+
+        currentPage.Popup += (sender, page) =>
+        {
+            KeyToPage.Add(Guid.NewGuid().ToString(), page);
+        };
             
         RegisterAlertHandler(currentPage);
     }

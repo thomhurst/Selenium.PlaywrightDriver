@@ -23,7 +23,7 @@ public class PackProjectsModule : Module<CommandResult[]>
         var projectFile = context.Git()
             .RootDirectory
             .AssertExists()
-            .FindFile(x => x.NameWithoutExtension == "TomLonghurst.Selenium.PlaywrightWebDriver.csproj")
+            .FindFile(x => x.Name == "TomLonghurst.Selenium.PlaywrightWebDriver.csproj")
             .AssertExists();
 
         return new List<CommandResult>

@@ -52,7 +52,7 @@ internal static class LocatorHelpers
     private static string GetInternal(By by)
     {
         var description = by.GetDescription();
-        var criteria = description.Split(':').Last().Trim();
+        var criteria = description.Split([':'], 2).Last().Trim();
         
         if (description.StartsWith("By.Id:"))
         {

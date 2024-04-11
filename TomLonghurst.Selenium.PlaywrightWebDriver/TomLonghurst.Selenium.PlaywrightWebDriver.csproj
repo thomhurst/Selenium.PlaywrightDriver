@@ -6,8 +6,29 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Authors>Tom Longhurst</Authors>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <None Include="../README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
     <ItemGroup>
       <PackageReference Include="Microsoft.Playwright" Version="1.43.0" />
+      <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Selenium.WebDriver" Version="4.19.0" />
     </ItemGroup>
 

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="host">Blah</div>
+<form id="form1" onsubmit="formSubmit()">
+    <label for="input1">Input 1</label>
+    <input id="input1"/>
+</form>
+<script>
+    document.querySelector("#btn").addEventListener("click", () => document.querySelector("#host").textContent = "Clicked");
+    
+    function formSubmit() {
+        const text = document.getElementById("input1").value;
+        document.getElementById("host").textContent = text;
+    }
+</script>
+</body>
+</html>

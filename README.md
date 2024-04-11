@@ -46,6 +46,7 @@ What's wrong with Selenium anyway? If you're not experiencing any problems, then
 - Just random "UNKNOWN_ERROR" exceptions!?
 
 ## Caveats
+- The parameters, arguments and objects returned by `ExecuteScript` may be different, and so your code surrounding scripts may need to be tweaked 
 - Alerts auto dismiss. So `Alert.Accept()` or `Alert.Dismiss()` don't actually do anything. `Alert.SendKeys(text)` is not supported.
 - The `WebDriver.Manage().Network` functionality has not been implemented
 - The `WebDriver.Manage().Logs` functionality has not been implemented

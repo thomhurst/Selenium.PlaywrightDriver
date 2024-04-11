@@ -64,7 +64,7 @@ internal static class LocatorHelpers
             return $"[name='{criteria}']";
         }
         
-        if (description.StartsWith("By.ClassName:"))
+        if (description.StartsWith("By.ClassName"))
         {
             return $".{criteria}";
         }

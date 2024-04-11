@@ -2,9 +2,24 @@
 Use Playwright as if it was a Selenium WebDriver
 
 ## Installation/Usage
-Install package `TomLonghurst.Selenium.PlaywrightWebDriver`
-Anywhere you are using concrete types (e.g. `ChromeWebDriver`), change them to the `IWebDriver` interface
-Then just create a `PlaywrightWebDriver` and use that!
+- Install package `TomLonghurst.Selenium.PlaywrightWebDriver`
+
+- As per the playwright instructions, you need to run the playwright install script to install browser binaries and such:
+
+`pwsh bin/Debug/netX/playwright.ps1 install`
+
+This can be achieved in C# by something similar to:
+
+```csharp
+Process.Start(new ProcessStartInfo("pwsh")
+{
+    Arguments = "playwright.ps1 install",
+    WorkingDirectory = Environment.CurrentDirectory
+})!.WaitForExit();
+```
+
+- Anywhere you are using concrete types (e.g. `ChromeWebDriver`), change them to the `IWebDriver` interface
+- Then just create a `PlaywrightWebDriver` and use that!
 
 ```csharp
 await using var driver = await PlaywrightWebDriver.CreateAsync();

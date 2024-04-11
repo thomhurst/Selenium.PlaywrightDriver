@@ -137,8 +137,8 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
         var locatorString = LocatorHelpers.GetLocatorString(by);
 
         var locator = CurrentFrameLocators.Any()
-            ? CurrentFrameLocators.Last().Locator(locatorString)
-            : CurrentPage.Locator(locatorString);
+            ? CurrentFrameLocators.Last().Locator(locatorString).First
+            : CurrentPage.Locator(locatorString).First;
 
         if (locator.CountAsync().Synchronously() == 0)
         {

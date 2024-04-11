@@ -23,7 +23,7 @@ public class PlaywrightWebElement : IWebElement
     {
         var locatorString = LocatorHelpers.GetLocatorString(by);
 
-        var locator = Locator.Locator(locatorString);
+        var locator = Locator.Locator(locatorString).First;
 
         return new PlaywrightWebElement(locator, locatorString);
     }

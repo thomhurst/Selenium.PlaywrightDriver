@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Playwright;
 using OpenQA.Selenium;
@@ -224,10 +225,7 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
 
     public object? ExecuteScript(string script, params object[] args)
     {
-        if (script.StartsWith("return "))
-        {
-            script = script.Substring("return ".Length);
-        }
+        script = ConvertScript(script);
         
         if (CurrentFrameLocators.Any())
         {
@@ -246,10 +244,7 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
 
     public object? ExecuteAsyncScript(string script, params object[] args)
     {
-        if (script.StartsWith("return "))
-        {
-            script = script.Substring("return ".Length);
-        }
+        script = ConvertScript(script);
         
         if (CurrentFrameLocators.Any())
         {
@@ -258,7 +253,7 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
             
         return CurrentPage.EvaluateAsync(script, args).Synchronously();
     }
-        
+
     internal PlaywrightWebDriver NewPage()
     {
         var page = Context.NewPageAsync().Synchronously();
@@ -285,4 +280,21 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
         await Browser.DisposeAsync();
         Playwright.Dispose();
     }
+
+    private static string ConvertScript(string script)
+    {
+        if (script.StartsWith("return "))
+        {
+            script = script.Substring("return ".Length);
+        }
+        
+        if (RegexArguments.IsMatch(script))
+        {
+            script = $"arguments => {script}";
+        }
+
+        return script;
+    }
+
+    private static readonly Regex RegexArguments = new Regex(@"arguments\[(?<number>[0-9]+)\]");
 }

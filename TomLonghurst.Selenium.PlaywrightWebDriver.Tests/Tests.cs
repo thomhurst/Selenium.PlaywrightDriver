@@ -45,6 +45,18 @@ public class Tests
         
         Assert.That(result, Is.EqualTo("\"Id One\""));
     }
+    
+    [Test]
+    public async Task Script_With_Selenium_Style_Arguments()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var result = driver.ExecuteScript("`You passed in ${arguments[0]} and ${arguments[1]}`", "Foo", "Bar")!.ToString();
+        
+        Assert.That(result, Is.EqualTo("You passed in Foo and Bar"));
+    }
 
     [Test]
     public async Task Locators_Test()

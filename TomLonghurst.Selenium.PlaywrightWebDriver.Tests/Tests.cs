@@ -209,6 +209,21 @@ public class Tests
         Assert.That(driver.FindElement(By.Id("iframe-root-page1")).Text, Is.EqualTo("Root Page"));
         Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("host")));
     }
+    
+    [Test]
+    public async Task Popup()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Popup.html");
+        
+        Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("host")));
+
+        var otherWindowHandle = driver.WindowHandles.First(x => x != driver.CurrentWindowHandle);
+        driver.SwitchTo().Window(otherWindowHandle);
+        
+        Assert.That(driver.FindElement(By.Id("host")).Text, Is.EqualTo("Window1!")); 
+    }
 
 #if !SeleniumVersion_3
     [Test]

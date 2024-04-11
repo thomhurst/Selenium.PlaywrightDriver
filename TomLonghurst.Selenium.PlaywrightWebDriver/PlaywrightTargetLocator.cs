@@ -26,15 +26,15 @@ public class PlaywrightTargetLocator : ITargetLocator
             throw new NoSuchFrameException($"No frame found at index {frameIndex}");
         }
         
-        return _playwrightWebDriver.SetFrame(frame.FrameLocator(":root"));
+        return _playwrightWebDriver.SetFrame(frame.FrameLocator(":root").First);
     }
 
     public IWebDriver Frame(string frameName)
     {
         var locatorString = LocatorHelpers.GetLocatorString(By.Name(frameName));
         var frame = _playwrightWebDriver.CurrentFrameLocators.Any()
-            ? _playwrightWebDriver.CurrentFrameLocators.Last().FrameLocator(locatorString)
-            : _playwrightWebDriver.CurrentPage.FrameLocator(locatorString);
+            ? _playwrightWebDriver.CurrentFrameLocators.Last().FrameLocator(locatorString).First
+            : _playwrightWebDriver.CurrentPage.FrameLocator(locatorString).First;
         
         if (frame.Owner.CountAsync().Synchronously() == 0)
         {
@@ -56,7 +56,7 @@ public class PlaywrightTargetLocator : ITargetLocator
             throw new NoSuchFrameException($"Not an iFrame: {frameElement.TagName}");
         }
         
-        var frameLocator = _playwrightWebDriver.CurrentPage.FrameLocator(playwrightWebElement._locatorString);
+        var frameLocator = _playwrightWebDriver.CurrentPage.FrameLocator(playwrightWebElement._locatorString).First;
         
         if (frameLocator.Owner.CountAsync().Synchronously() == 0)
         {

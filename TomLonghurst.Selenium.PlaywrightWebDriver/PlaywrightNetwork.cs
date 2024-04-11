@@ -4,6 +4,7 @@ using OpenQA.Selenium;
 
 namespace TomLonghurst.Selenium.PlaywrightWebDriver;
 
+#if SeleniumVersion_4
 public class PlaywrightNetwork : INetwork
 {
     private readonly PlaywrightWebDriver _playwrightWebDriver;
@@ -50,3 +51,4 @@ public class PlaywrightNetwork : INetwork
     public event EventHandler<NetworkRequestSentEventArgs>? NetworkRequestSent;
     public event EventHandler<NetworkResponseReceivedEventArgs>? NetworkResponseReceived;
 }
+#endif

@@ -98,11 +98,13 @@ public class PlaywrightTargetLocator : ITargetLocator
         return _playwrightWebDriver;
     }
 
+#if SeleniumVersion_4
     public IWebDriver NewWindow(WindowType typeHint)
     {
         _playwrightWebDriver.NewPage();
         return _playwrightWebDriver;
     }
+#endif
 
     public IWebDriver DefaultContent()
     {

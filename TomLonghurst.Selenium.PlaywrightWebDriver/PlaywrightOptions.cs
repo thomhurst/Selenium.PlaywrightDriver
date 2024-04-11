@@ -19,5 +19,8 @@ public class PlaywrightOptions : IOptions
     public ICookieJar Cookies => new PlaywrightCookieJar(_playwrightWebDriver);
     public IWindow Window => new PlaywrightWindow(_playwrightWebDriver);
     public ILogs Logs => new PlaywrightLogs(_playwrightWebDriver);
+    
+#if SeleniumVersion_4    
     public INetwork Network => new PlaywrightNetwork(_playwrightWebDriver);
+#endif
 }

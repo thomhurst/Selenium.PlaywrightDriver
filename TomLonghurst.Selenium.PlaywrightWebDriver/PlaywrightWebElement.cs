@@ -68,6 +68,11 @@ public class PlaywrightWebElement : IWebElement
         return Locator.GetAttributeAsync(attributeName).Synchronously();
     }
 
+    public string? GetProperty(string propertyName)
+    {
+        return GetAttribute(propertyName);
+    }
+
     public string? GetDomAttribute(string attributeName)
     {
         return GetAttribute(attributeName);

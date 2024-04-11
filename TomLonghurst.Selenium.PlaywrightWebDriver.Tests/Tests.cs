@@ -63,10 +63,7 @@ public class Tests
     [Test]
     public async Task Script_With_Element_Argument()
     {
-        await using var driver = await PlaywrightWebDriver.CreateAsync(PlaywrightBrowserType.Chromium, new BrowserTypeLaunchOptions
-        {
-            Headless = false
-        }, new BrowserNewContextOptions());
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
 
         driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "ScriptElementScroll.html");
 

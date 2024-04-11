@@ -19,6 +19,10 @@
         <PackageReference Include="Yarp.ReverseProxy" Version="2.1.0" />
     </ItemGroup>
 
+    <PropertyGroup Condition="'$(SeleniumVersion)' == '3'">
+        <DefineConstants>SeleniumVersion_3</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\TomLonghurst.Selenium.PlaywrightWebDriver\TomLonghurst.Selenium.PlaywrightWebDriver.csproj" />
     </ItemGroup>

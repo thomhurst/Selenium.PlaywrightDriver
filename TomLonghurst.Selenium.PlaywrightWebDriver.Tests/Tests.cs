@@ -62,7 +62,8 @@ public class Tests
         
         Assert.That(host.TagName, Is.EqualTo("DIV"));
     }
-    
+
+#if !SeleniumVersion_3
     [Test]
     public async Task ShadowDom()
     {
@@ -74,6 +75,7 @@ public class Tests
         
         Assert.That(span.Text, Is.EqualTo("I'm in the shadow DOM"));
     }
+#endif
     
     [Test]
     public async Task NestedFinds()
@@ -208,7 +210,7 @@ public class Tests
         Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("host")));
     }
 
-
+#if !SeleniumVersion_3
     [Test]
     public async Task SwitchTabs()
     {
@@ -248,7 +250,9 @@ public class Tests
         
         Assert.That(newText.Text, Is.EqualTo("Window1!"));
     }
+#endif
     
+#if !SeleniumVersion_3
     [Test]
     public async Task SwitchToDefaultContent()
     {
@@ -314,4 +318,5 @@ public class Tests
         
         driver.Close();
     }
+#endif
 }

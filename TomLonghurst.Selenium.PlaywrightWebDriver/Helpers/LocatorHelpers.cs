@@ -52,7 +52,23 @@ internal static class LocatorHelpers
     private static string GetInternal(By by)
     {
         var description = by.GetDescription();
-        var criteria = description.Split(':').Last();
+        var criteria = description.Split(':').Last().Trim();
+        
+        if (description.StartsWith("By.Id:"))
+        {
+            return $"#{criteria}";
+        }
+        
+        if (description.StartsWith("By.Name:"))
+        {
+            return $"[name='{criteria}']";
+        }
+        
+        if (description.StartsWith("By.ClassName"))
+        {
+            return $".{criteria}";
+        }
+        
         if (description.StartsWith("By.XPath:"))
         {
             return $"xpath={criteria}";

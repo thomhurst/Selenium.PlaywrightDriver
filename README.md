@@ -1,6 +1,23 @@
 # Selenium.PlaywrightDriver
 Use Playwright as if it was a Selenium WebDriver
 
+## Installation/Usage
+Install package `TomLonghurst.Selenium.PlaywrightWebDriver`
+Anywhere you are using concrete types (e.g. `ChromeWebDriver`), change them to the `IWebDriver` interface
+Then just create a `PlaywrightWebDriver` and use that!
+
+```csharp
+await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+driver.Url = "https://www.tomlonghurst.com";
+
+driver.FindElement(By.ClassName("logo__img")).Click();
+```
+
+The static `Create/CreateAsync` methods can take the Playwright `BrowserTypeLaunchOptions` and `BrowserNewContextOptions` if you want to customise things like browser type, proxys, mobile emulation, etc.
+
+Your `PlaywrightWebDriver` will also expose the underlying instances of `IPlaywright`, `IBrowser` and `IBrowserContext` if you need to use/manipulate those objects for any specific reason.
+
 ## Motivation
 I've come across lots of code bases where there are old, large test suites written in Selenium. These are important for confirming the health of a system, so we can't just delete them. But it'd also be a lot of work to migrate/convert them all.
 
@@ -18,11 +35,3 @@ What's wrong with Selenium anyway? If you're not experiencing any problems, then
 - The `WebDriver.Manage().Network` functionality has not been implemented
 - The `WebDriver.Manage().Logs` functionality has not been implemented
 - Sync-over-async. Playwright is async, but Selenium is not. So this was necessary to adhere to the `IWebDriver` interface. This means that this may be slower than a pure playwright solution due to more pressure on the thread pool. There's also always the risk of sync-over-async deadlocks. As such, this package is recommended as a migration strategy, and you should migrate to the pure playwright API if/when possible.
-
-```csharp
-await using var driver = await PlaywrightWebDriver.CreateAsync();
-
-driver.Url = "https://www.tomlonghurst.com";
-
-driver.FindElement(By.ClassName("logo__img")).Click();
-```

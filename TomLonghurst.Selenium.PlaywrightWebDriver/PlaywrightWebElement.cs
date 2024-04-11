@@ -10,7 +10,7 @@ namespace TomLonghurst.Selenium.PlaywrightWebDriver;
 
 public class PlaywrightWebElement : IWebElement
 {
-    internal readonly ILocator Locator;
+    public readonly ILocator Locator;
     internal readonly string _locatorString;
 
     public PlaywrightWebElement(ILocator locator, string locatorString)

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="host">Host!</div>
+<script>
+    for (let i = 0; i <= 1000; i++) {
+        const div = document.createElement('div');
+        div.textContent = i;
+        div.id = `id${i}`
+        document.body.append(div)
+    }
+</script>
+</body>
+</html>

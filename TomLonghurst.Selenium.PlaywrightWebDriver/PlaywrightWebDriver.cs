@@ -225,7 +225,7 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
 
     public object? ExecuteScript(string script, params object[] args)
     {
-        script = ConvertScript(script);
+        script = ConvertScript(script, args);
         
         if (CurrentFrameLocators.Any())
         {
@@ -244,7 +244,7 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
 
     public object? ExecuteAsyncScript(string script, params object[] args)
     {
-        script = ConvertScript(script);
+        script = ConvertScript(script, args);
         
         if (CurrentFrameLocators.Any())
         {
@@ -281,8 +281,17 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
         Playwright.Dispose();
     }
 
-    private static string ConvertScript(string script)
+    private static string ConvertScript(string script, object[] args)
     {
+        for (var i = 0; i < args.Length; i++)
+        {
+            var arg = args[i];
+            if (arg is PlaywrightWebElement playwrightWebElement)
+            {
+                args[i] = playwrightWebElement.Locator.ElementHandleAsync().Synchronously();
+            }
+        }
+        
         if (script.StartsWith("return "))
         {
             script = script.Substring("return ".Length);

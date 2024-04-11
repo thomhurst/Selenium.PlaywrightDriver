@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Playwright;
 using OpenQA.Selenium;
+using Cookie = OpenQA.Selenium.Cookie;
 
 namespace TomLonghurst.Selenium.PlaywrightWebDriver.Tests;
 
@@ -56,6 +58,23 @@ public class Tests
         var result = driver.ExecuteScript("`You passed in ${arguments[0]} and ${arguments[1]}`", "Foo", "Bar")!.ToString();
         
         Assert.That(result, Is.EqualTo("You passed in Foo and Bar"));
+    }
+    
+    [Test]
+    public async Task Script_With_Element_Argument()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync(PlaywrightBrowserType.Chromium, new BrowserTypeLaunchOptions
+        {
+            Headless = false
+        }, new BrowserNewContextOptions());
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "ScriptElementScroll.html");
+
+        var idElement = driver.FindElement(By.Id("id500"));
+
+        driver.ExecuteScript("arguments[0].scrollIntoView(true);", idElement);
+        
+        Console.WriteLine();
     }
 
     [Test]

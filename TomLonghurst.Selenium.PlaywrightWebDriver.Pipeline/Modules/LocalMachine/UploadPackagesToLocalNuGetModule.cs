@@ -7,10 +7,8 @@ using ModularPipelines.DotNet.Options;
 using ModularPipelines.Extensions;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
-using TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules;
-using TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules.LocalMachine;
 
-namespace ModularPipelines.Build.Modules.LocalMachine;
+namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules.LocalMachine;
 
 [DependsOn<AddLocalNugetSourceModule>]
 [DependsOn<PackagePathsParserModule>]

@@ -6,9 +6,8 @@ using ModularPipelines.Exceptions;
 using ModularPipelines.Extensions;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
-using TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules.LocalMachine;
 
-namespace ModularPipelines.Build.Modules.LocalMachine;
+namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules.LocalMachine;
 
 [DependsOn<CreateLocalNugetFolderModule>]
 public class AddLocalNugetSourceModule : Module<CommandResult>

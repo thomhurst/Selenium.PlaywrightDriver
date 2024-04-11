@@ -44,6 +44,6 @@ jobs:
             ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
       - name: Run Pipeline
         run: dotnet run -c Release --framework net8.0
-        working-directory: "src/TomLonghurst.Selenium.PlaywrightWebDriver.Build"
+        working-directory: "src/TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline"
         env:
           NuGet__ApiKey: ${{ github.ref == 'refs/heads/main' && secrets.NuGet__ApiKey || null }}

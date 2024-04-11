@@ -102,8 +102,9 @@ public class PlaywrightCookieJar : ICookieJar
             expiry: cookie.Expires == 0 ? null : DateTimeOffset.FromUnixTimeSeconds((long)cookie.Expires).DateTime,
             name: cookie.Name,
             path: cookie.Path,
-            value: cookie.Value,
+            value: cookie.Value
 #if SeleniumVersion_4
+            ,
             secure: cookie.Secure,
             sameSite: cookie.SameSite.ToString(),
             isHttpOnly: cookie.HttpOnly

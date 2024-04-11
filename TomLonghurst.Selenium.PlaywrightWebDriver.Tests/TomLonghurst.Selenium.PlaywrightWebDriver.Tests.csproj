@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <IsPackable>false</IsPackable>
+
+        <LangVersion>default</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0"/>
+        <PackageReference Include="NUnit" Version="3.13.3"/>
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1"/>
+        <PackageReference Include="NUnit.Analyzers" Version="3.3.0"/>
+        <PackageReference Include="coverlet.collector" Version="3.1.2"/>
+        <PackageReference Include="Yarp.ReverseProxy" Version="2.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TomLonghurst.Selenium.PlaywrightWebDriver\TomLonghurst.Selenium.PlaywrightWebDriver.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="HtmlPages\ShadowDom.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\TagName.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\NestedFinds.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\Click.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\FormSubmit.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\Tabs\Window1.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\Tabs\Window2.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\Windows\Window1.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\Windows\Window2.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\Windows\Window3.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\IFrame.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\LocatorsTest.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="HtmlPages\Alert.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>

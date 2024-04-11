@@ -224,6 +224,11 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
 
     public object? ExecuteScript(string script, params object[] args)
     {
+        if (script.StartsWith("return "))
+        {
+            script = script.Substring("return ".Length);
+        }
+        
         if (CurrentFrameLocators.Any())
         {
             return CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously();
@@ -241,6 +246,11 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
 
     public object? ExecuteAsyncScript(string script, params object[] args)
     {
+        if (script.StartsWith("return "))
+        {
+            script = script.Substring("return ".Length);
+        }
+        
         if (CurrentFrameLocators.Any())
         {
             return CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously();

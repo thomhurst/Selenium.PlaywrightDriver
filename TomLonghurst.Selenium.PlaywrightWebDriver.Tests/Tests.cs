@@ -21,7 +21,31 @@ public class Tests
         
         Assert.That(driver.KeyToPage, Is.Empty);
     }
+
+    [Test]
+    public async Task Script_With_Return()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var result = driver.ExecuteScript("return JSON.stringify(document.getElementById('id1').textContent)")!.ToString();
+        
+        Assert.That(result, Is.EqualTo("\"Id One\""));
+    }
     
+    [Test]
+    public async Task Script_Without_Return()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var result = driver.ExecuteScript("JSON.stringify(document.getElementById('id1').textContent)")!.ToString();
+        
+        Assert.That(result, Is.EqualTo("\"Id One\""));
+    }
+
     [Test]
     public async Task Locators_Test()
     {

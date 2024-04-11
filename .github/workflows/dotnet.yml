@@ -46,4 +46,4 @@ jobs:
         run: dotnet run -c Release --framework net8.0
         working-directory: "src/TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline"
         env:
-          NuGet__ApiKey: ${{ github.ref == 'refs/heads/main' && secrets.NuGet__ApiKey || null }}
+          NuGet__ApiKey: ${{ github.ref == 'refs/heads/main' && secrets.NUGET__APIKEY || null }}

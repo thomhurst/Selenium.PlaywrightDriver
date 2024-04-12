@@ -4,6 +4,7 @@ Use Playwright as if it was a Selenium WebDriver
 ## Installation/Usage
 If you're using Selenium v4
 - Install package `TomLonghurst.Selenium.PlaywrightWebDriver`
+
 If you're using Selenium V3
 - Install package `TomLonghurst.Selenium.V3.PlaywrightWebDriver`
 

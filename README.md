@@ -8,7 +8,7 @@ If you're using Selenium v4
 If you're using Selenium v3
 - Install package `TomLonghurst.Selenium.V3.PlaywrightWebDriver`
 
-- As per the playwright instructions, you need to run the playwright install script to install browser binaries and such:
+As per the playwright instructions, you need to run the playwright install script to install browser binaries and such:
 
 `pwsh bin/Debug/netX/playwright.ps1 install`
 
@@ -22,8 +22,9 @@ Process.Start(new ProcessStartInfo("pwsh")
 })!.WaitForExit();
 ```
 
-- Anywhere you are using concrete types (e.g. `ChromeWebDriver`), change them to the `IWebDriver` interface
-- Then just create a `PlaywrightWebDriver` and use that!
+Anywhere you are using concrete types (e.g. `ChromeWebDriver`), change them to the `IWebDriver` interface
+
+Then just create a `PlaywrightWebDriver` and use that!
 
 ```csharp
 await using var driver = await PlaywrightWebDriver.CreateAsync();

@@ -15,13 +15,12 @@ namespace TomLonghurst.Selenium.PlaywrightWebDriver;
 
 public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDisposable
 {
-    public readonly IPlaywright Playwright;
-    public readonly IBrowser Browser;
-    public readonly IBrowserContext Context;
+    public IPlaywright Playwright { get; }
+    public IBrowser Browser { get; }
+    public IBrowserContext Context { get; }
+    public IPage OriginalPage { get; }
 
     internal string? _lastAlertText;
-
-    public IPage OriginalPage;
 
     public IPage CurrentPage
     {

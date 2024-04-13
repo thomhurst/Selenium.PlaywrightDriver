@@ -56,3 +56,6 @@ What's wrong with Selenium anyway? If you're not experiencing any problems, then
 - The `WebDriver.Manage().Network` functionality has not been implemented
 - The `WebDriver.Manage().Logs` functionality has not been implemented
 - Sync-over-async. Playwright is async, but Selenium is not. So this was necessary to adhere to the `IWebDriver` interface. This means that this may be slower than a pure playwright solution due to more pressure on the thread pool. There's also always the risk of sync-over-async deadlocks. As such, this package is recommended as a migration strategy, and you should migrate to the pure playwright API if/when possible.
+
+## Bonus
+You can start using Playwright selectors even with the Selenium APIs. Instead of using the By.Id(...) class, you can use the PlaywrightBy.Selector(...) class. You can pass this in anywhere you'd pass in a normal By object!

@@ -276,6 +276,18 @@ public class Tests
         
         Assert.That(driver.FindElement(By.Id("host")).Text, Is.EqualTo("Window1!")); 
     }
+    
+    [Test]
+    public async Task Mix_And_Match_APIs()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "Click.html");
+        
+        driver.FindElement(By.Id("btn")).Click();
+
+        await driver.CurrentPage.ClickAsync("#btn");
+    }
 
 #if !SeleniumVersion_3
     [Test]

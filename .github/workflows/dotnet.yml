@@ -42,4 +42,4 @@ jobs:
         working-directory: "TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline"
         env:
           NuGet__ApiKey: ${{ github.ref == 'refs/heads/main' && secrets.NUGET__APIKEY || null }}
-          NuGet__ShouldPublish: ${{ github.event.inputs.publish-packages }}
+          NuGet__ShouldPublish: ${{ github.event.inputs.publish-packages || false }}

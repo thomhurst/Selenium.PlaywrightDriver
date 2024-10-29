@@ -50,6 +50,12 @@ public class PlaywrightWebElement : IWebElement
 
     public void SendKeys(string text)
     {
+        if (GetProperty("type") == "file")
+        {
+            Locator.SetInputFilesAsync(text).Synchronously();
+            return;
+        }
+        
         Locator.FillAsync(text).Synchronously();
     }
 

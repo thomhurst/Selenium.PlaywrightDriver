@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using OpenQA.Selenium;
 using TomLonghurst.Selenium.PlaywrightWebDriver.Extensions;
 
@@ -15,17 +16,32 @@ public class PlaywrightNavigation : INavigation
 
     public void Back()
     {
-        _playwrightWebDriver.CurrentPage.GoBackAsync().Synchronously();
+        BackAsync().Synchronously();
+    }
+
+    public Task BackAsync()
+    {
+        return _playwrightWebDriver.CurrentPage.GoBackAsync();
     }
 
     public void Forward()
     {
-        _playwrightWebDriver.CurrentPage.GoForwardAsync().Synchronously();
+        ForwardAsync().Synchronously();
+    }
+
+    public Task ForwardAsync()
+    {
+        return _playwrightWebDriver.CurrentPage.GoForwardAsync();
     }
 
     public void GoToUrl(string url)
     {
-        _playwrightWebDriver.Url = url;
+        GoToUrlAsync(url).Synchronously();
+    }
+
+    public Task GoToUrlAsync(string url)
+    {
+        return _playwrightWebDriver.CurrentPage.GotoAsync(url);
     }
 
     public void GoToUrl(Uri url)
@@ -33,8 +49,18 @@ public class PlaywrightNavigation : INavigation
         GoToUrl(url.ToString());
     }
 
+    public Task GoToUrlAsync(Uri url)
+    {
+        return GoToUrlAsync(url.ToString());
+    }
+
     public void Refresh()
     {
-        _playwrightWebDriver.CurrentPage.ReloadAsync().Synchronously();
+        RefreshAsync().Synchronously();
+    }
+
+    public Task RefreshAsync()
+    {
+        return _playwrightWebDriver.CurrentPage.ReloadAsync(); 
     }
 }

@@ -288,6 +288,18 @@ public class Tests
 
         await driver.CurrentPage.ClickAsync("#btn");
     }
+    
+    [Test]
+    public async Task File_Input()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+        
+        var randomFile = Path.GetTempFileName();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "FileInput.html");
+        
+        driver.FindElement(By.Id("file-input")).SendKeys(randomFile);
+    }
 
 #if !SeleniumVersion_3
     [Test]

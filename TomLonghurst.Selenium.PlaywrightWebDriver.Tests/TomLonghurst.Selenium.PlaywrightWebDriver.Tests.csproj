@@ -73,6 +73,9 @@
       <None Update="HtmlPages\ScriptElementScroll.html">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="HtmlPages\FileInput.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

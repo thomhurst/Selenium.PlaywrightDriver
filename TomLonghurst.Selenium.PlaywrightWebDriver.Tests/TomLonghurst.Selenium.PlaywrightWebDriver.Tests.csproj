@@ -16,7 +16,7 @@
         <PackageReference Include="NUnit3TestAdapter" Version="5.0.0"/>
         <PackageReference Include="NUnit.Analyzers" Version="4.6.0"/>
         <PackageReference Include="coverlet.collector" Version="6.0.4"/>
-        <PackageReference Include="Yarp.ReverseProxy" Version="2.2.0" />
+        <PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(SeleniumVersion)' == '3'">

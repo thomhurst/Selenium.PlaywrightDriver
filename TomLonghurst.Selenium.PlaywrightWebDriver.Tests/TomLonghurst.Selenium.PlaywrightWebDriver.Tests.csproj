@@ -8,6 +8,7 @@
         <IsPackable>false</IsPackable>
 
         <LangVersion>default</LangVersion>
+        <SuppressTfmSupportBuildErrors>true</SuppressTfmSupportBuildErrors>
     </PropertyGroup>
 
     <ItemGroup>

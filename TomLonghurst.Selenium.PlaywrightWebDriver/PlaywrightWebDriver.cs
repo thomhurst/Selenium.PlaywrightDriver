@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Playwright;
@@ -231,7 +232,27 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
             return CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously();
         }
             
-        return CurrentPage.EvaluateAsync(script, args).Synchronously();
+        var playwrightResult = CurrentPage.EvaluateAsync(script, args).Synchronously();
+        return ConvertResult(playwrightResult);
+    }
+
+    private static object? ConvertResult(JsonElement? playwrightResult)
+    {
+        if (playwrightResult == null)
+        {
+            return null;
+        }
+
+        var value = playwrightResult.Value;
+        return value.ValueKind switch
+        {
+            JsonValueKind.False => false,
+            JsonValueKind.True => true,
+            JsonValueKind.Number => value.TryGetInt64(out var intValue) ? intValue : value.GetDouble(),
+            JsonValueKind.String => value.GetString(),
+            JsonValueKind.Array => value.EnumerateArray().Select(x => ConvertResult(x)).ToArray(),
+            _ => value
+        };
     }
 
 #if SeleniumVersion_4

@@ -226,13 +226,11 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
     public object? ExecuteScript(string script, params object[] args)
     {
         script = ConvertScript(script, args);
-        
-        if (CurrentFrameLocators.Any())
-        {
-            return CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously();
-        }
-            
-        var playwrightResult = CurrentPage.EvaluateAsync(script, args).Synchronously();
+
+        var playwrightResult = CurrentFrameLocators.Any()
+            ? CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously()
+            : CurrentPage.EvaluateAsync(script, args).Synchronously();
+
         return ConvertResult(playwrightResult);
     }
 

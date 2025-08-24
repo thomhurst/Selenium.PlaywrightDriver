@@ -74,6 +74,62 @@ public class Tests
         Console.WriteLine();
     }
 
+    [TestCase("5", 5L)]
+    [TestCase("'foo'", "foo")]
+    [TestCase("false", false)]
+    [TestCase("true", true)]
+    [TestCase("1.5", 1.5d)]
+    [TestCase("null", null)]
+    public async Task Script_With_Primitive_Return_Value(string script, object? expectedValue)
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        var result = driver.ExecuteScript(script);
+
+        Assert.That(result, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public async Task Script_With_Array_Return_Value()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        var result = driver.ExecuteScript("[1, '2', 3]");
+
+        Assert.That(result, Is.EqualTo(new object[] {1, "2", 3}));
+    }
+
+    [Test, Ignore("Doesn't work. It throws Microsoft.Playwright.PlaywrightException : SyntaxError: Unexpected token ':'. , though with Selenium ChromeDriver the same script works just fine.")]
+    public async Task Script_With_Object_Return_Value()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        var result = driver.ExecuteScript("return {a: 5, b:'foo'}");
+
+        Assert.That(result, Is.InstanceOf<Dictionary<string, object>>());
+        var dict = (Dictionary<string, object>)result;
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(dict["a"], Is.EqualTo(5L));
+            Assert.That(dict["b"], Is.EqualTo("foo"));
+        }
+    }
+
+    [Test, Ignore("Doesn't work. Result is 'ValueKind = String : \"ref: <Node>\"', but doesn't contain the actual reference to the element. This does work with ChromeDriver though.")]
+    public async Task Script_With_Element_Return_Value()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var idElement = driver.FindElement(By.Id("id1"));
+        var result = driver.ExecuteScript("return arguments[0]", idElement);
+
+        Assert.That(result, Is.AssignableFrom<IWebElement>());
+        var returnedElement = (IWebElement)result;
+        Assert.That(returnedElement.Text, Is.EqualTo("Id One"));
+    }
+
     [Test]
     public async Task Locators_Test()
     {

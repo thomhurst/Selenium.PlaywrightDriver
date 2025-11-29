@@ -226,12 +226,17 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
     {
         script = ConvertScript(script, args);
         
+        object? result;
         if (CurrentFrameLocators.Any())
         {
-            return CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously();
+            result = CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously();
+        }
+        else
+        {
+            result = CurrentPage.EvaluateAsync(script, args).Synchronously();
         }
             
-        return CurrentPage.EvaluateAsync(script, args).Synchronously();
+        return Extensions.JsonElementConverter.ConvertToNativeType(result);
     }
 
 #if SeleniumVersion_4
@@ -245,12 +250,17 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
     {
         script = ConvertScript(script, args);
         
+        object? result;
         if (CurrentFrameLocators.Any())
         {
-            return CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously();
+            result = CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously();
+        }
+        else
+        {
+            result = CurrentPage.EvaluateAsync(script, args).Synchronously();
         }
             
-        return CurrentPage.EvaluateAsync(script, args).Synchronously();
+        return Extensions.JsonElementConverter.ConvertToNativeType(result);
     }
 
     internal PlaywrightWebDriver NewPage()

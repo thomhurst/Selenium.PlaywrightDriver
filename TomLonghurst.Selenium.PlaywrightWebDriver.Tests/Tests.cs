@@ -73,6 +73,47 @@ public class Tests
         
         Console.WriteLine();
     }
+    
+    [Test]
+    public async Task Script_Returns_Number()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var result = driver.ExecuteScript("return 5");
+        
+        Assert.That(result, Is.EqualTo(5));
+        Assert.That(result, Is.TypeOf<int>());
+    }
+    
+    [Test]
+    public async Task Script_Returns_Various_Types()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        // Test integer
+        var intResult = driver.ExecuteScript("return 42");
+        Assert.That(intResult, Is.EqualTo(42));
+        
+        // Test double
+        var doubleResult = driver.ExecuteScript("return 3.14");
+        Assert.That(doubleResult, Is.EqualTo(3.14));
+        
+        // Test string
+        var stringResult = driver.ExecuteScript("return 'hello'");
+        Assert.That(stringResult, Is.EqualTo("hello"));
+        
+        // Test boolean
+        var boolResult = driver.ExecuteScript("return true");
+        Assert.That(boolResult, Is.EqualTo(true));
+        
+        // Test null
+        var nullResult = driver.ExecuteScript("return null");
+        Assert.That(nullResult, Is.Null);
+    }
 
     [Test]
     public async Task Locators_Test()

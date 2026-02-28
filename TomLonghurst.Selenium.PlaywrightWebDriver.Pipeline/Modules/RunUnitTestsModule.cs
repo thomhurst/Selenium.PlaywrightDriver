@@ -33,7 +33,7 @@ public class RunUnitTestsModule : Module<List<CommandResult>>
     {
         var dotNetTestOptions = new DotNetTestOptions
         {
-            Project = unitTestProjectFile.Path,
+            Arguments = new[] { unitTestProjectFile.Path },
         };
 
         if (isV3)

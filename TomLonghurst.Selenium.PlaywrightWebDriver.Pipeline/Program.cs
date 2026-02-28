@@ -10,7 +10,8 @@ using TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Settings;
 var pipelineBuilder = Pipeline.CreateBuilder(args);
 
 pipelineBuilder.Configuration
-    .AddJsonFile("appsettings.json")
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: true)
     .AddUserSecrets<Program>()
     .AddEnvironmentVariables();
 

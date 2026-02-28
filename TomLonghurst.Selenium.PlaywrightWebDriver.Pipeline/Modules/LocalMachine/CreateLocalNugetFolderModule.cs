@@ -10,9 +10,9 @@ namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules.LocalMachin
 [DependsOn<PackagePathsParserModule>]
 public class CreateLocalNugetFolderModule : Module<Folder>
 {
-    protected override async Task<Folder?> ExecuteAsync(IPipelineContext context, CancellationToken cancellationToken)
+    protected override async Task<Folder?> ExecuteAsync(IModuleContext context, CancellationToken cancellationToken)
     {
-        var localNugetRepositoryFolder = context.FileSystem.GetFolder(Environment.SpecialFolder.ApplicationData)
+        var localNugetRepositoryFolder = context.Files.GetFolder(Environment.SpecialFolder.ApplicationData)
             .GetFolder("ModularPipelines")
             .GetFolder("LocalNuget")
             .Create();

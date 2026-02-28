@@ -13,20 +13,21 @@ namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules.LocalMachin
 public class AddLocalNugetSourceModule : Module<CommandResult>
 {
     /// <inheritdoc/>
-    protected override Task<bool> ShouldIgnoreFailures(IPipelineContext context, Exception exception)
+    protected override async Task<CommandResult?> ExecuteAsync(IModuleContext context, CancellationToken cancellationToken)
     {
-        return Task.FromResult(exception is CommandException commandException &&
-                               commandException.StandardOutput.Contains("The name specified has already been added to the list of available package sources"));
-    }
+        var localNugetPathResult = await context.GetModule<CreateLocalNugetFolderModule>();
 
-    /// <inheritdoc/>
-    protected override async Task<CommandResult?> ExecuteAsync(IPipelineContext context, CancellationToken cancellationToken)
-    {
-        var localNugetPathResult = await GetModule<CreateLocalNugetFolderModule>();
-
-        return await context.DotNet().Nuget.Add.Source(new DotNetNugetAddSourceOptions(packageSourcePath: localNugetPathResult.Value.AssertExists())
+        try
         {
-            Name = "ModularPipelinesLocalNuGet",
-        }, cancellationToken);
+            return await context.DotNet().Nuget.Add.Source(new DotNetNugetAddSourceOptions
+            {
+                Packagesourcepath = localNugetPathResult.ValueOrDefault!.Path,
+                Name = "ModularPipelinesLocalNuGet",
+            }, cancellationToken: cancellationToken);
+        }
+        catch (CommandException ex) when (ex.StandardOutput.Contains("The name specified has already been added to the list of available package sources"))
+        {
+            return null;
+        }
     }
 }

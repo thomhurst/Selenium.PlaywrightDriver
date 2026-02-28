@@ -14,7 +14,7 @@ using TomLonghurst.Selenium.PlaywrightWebDriver.Helpers;
 [assembly: InternalsVisibleTo("TomLonghurst.Selenium.PlaywrightWebDriver.Tests")]
 namespace TomLonghurst.Selenium.PlaywrightWebDriver;
 
-public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDisposable
+public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScreenshot, IAsyncDisposable
 {
     public IPlaywright Playwright { get; }
     public IBrowser Browser { get; }
@@ -252,6 +252,12 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
         }
 
         return ConvertResult(CurrentPage.EvaluateAsync(script, args).Synchronously());
+    }
+
+    public Screenshot GetScreenshot()
+    {
+        var bytes = CurrentPage.ScreenshotAsync().Synchronously();
+        return new Screenshot(Convert.ToBase64String(bytes));
     }
 
     internal PlaywrightWebDriver NewPage()

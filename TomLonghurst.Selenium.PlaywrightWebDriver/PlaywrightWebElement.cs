@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
@@ -8,7 +9,7 @@ using TomLonghurst.Selenium.PlaywrightWebDriver.Helpers;
 
 namespace TomLonghurst.Selenium.PlaywrightWebDriver;
 
-public class PlaywrightWebElement : IWebElement
+public class PlaywrightWebElement : IWebElement, ITakesScreenshot
 {
     public readonly ILocator Locator;
     internal readonly string _locatorString;
@@ -124,4 +125,10 @@ public class PlaywrightWebElement : IWebElement
     }
 
     public bool Displayed => Locator.IsVisibleAsync().Synchronously();
+
+    public Screenshot GetScreenshot()
+    {
+        var bytes = Locator.ScreenshotAsync().Synchronously();
+        return new Screenshot(Convert.ToBase64String(bytes));
+    }
 }

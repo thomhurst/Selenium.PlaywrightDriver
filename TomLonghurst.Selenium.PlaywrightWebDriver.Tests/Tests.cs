@@ -506,4 +506,45 @@ public class Tests
         driver.Close();
     }
 #endif
+
+    [Test]
+    public async Task Driver_GetScreenshot_Returns_Valid_Png()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
+
+        Assert.That(screenshot, Is.Not.Null);
+        Assert.That(screenshot.AsBase64EncodedString, Is.Not.Empty);
+
+        var bytes = Convert.FromBase64String(screenshot.AsBase64EncodedString);
+        // PNG magic bytes: 137 80 78 71
+        Assert.That(bytes[0], Is.EqualTo((byte)137));
+        Assert.That(bytes[1], Is.EqualTo((byte)80));
+        Assert.That(bytes[2], Is.EqualTo((byte)78));
+        Assert.That(bytes[3], Is.EqualTo((byte)71));
+    }
+
+    [Test]
+    public async Task Element_GetScreenshot_Returns_Valid_Png()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var element = driver.FindElement(By.Id("id1"));
+        var screenshot = ((ITakesScreenshot)element).GetScreenshot();
+
+        Assert.That(screenshot, Is.Not.Null);
+        Assert.That(screenshot.AsBase64EncodedString, Is.Not.Empty);
+
+        var bytes = Convert.FromBase64String(screenshot.AsBase64EncodedString);
+        // PNG magic bytes: 137 80 78 71
+        Assert.That(bytes[0], Is.EqualTo((byte)137));
+        Assert.That(bytes[1], Is.EqualTo((byte)80));
+        Assert.That(bytes[2], Is.EqualTo((byte)78));
+        Assert.That(bytes[3], Is.EqualTo((byte)71));
+    }
 }

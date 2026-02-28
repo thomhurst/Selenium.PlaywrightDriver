@@ -343,6 +343,102 @@ public class Tests
     }
 #endif
     
+    [Test]
+    public async Task Script_Returns_Integer()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var result = driver.ExecuteScript("return 5");
+
+        Assert.That(result, Is.InstanceOf<long>());
+        Assert.That(result, Is.EqualTo(5L));
+    }
+
+    [Test]
+    public async Task Script_Returns_Double()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var result = driver.ExecuteScript("return 3.14");
+
+        Assert.That(result, Is.InstanceOf<double>());
+        Assert.That(result, Is.EqualTo(3.14));
+    }
+
+    [Test]
+    public async Task Script_Returns_String()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var result = driver.ExecuteScript("return 'hello'");
+
+        Assert.That(result, Is.InstanceOf<string>());
+        Assert.That(result, Is.EqualTo("hello"));
+    }
+
+    [Test]
+    public async Task Script_Returns_Boolean()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var result = driver.ExecuteScript("return true");
+
+        Assert.That(result, Is.InstanceOf<bool>());
+        Assert.That(result, Is.EqualTo(true));
+    }
+
+    [Test]
+    public async Task Script_Returns_Null()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var result = driver.ExecuteScript("return null");
+
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async Task Script_Returns_Array()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var result = driver.ExecuteScript("return [1, 2, 3]");
+
+        Assert.That(result, Is.InstanceOf<System.Collections.ObjectModel.ReadOnlyCollection<object?>>());
+        var list = (System.Collections.ObjectModel.ReadOnlyCollection<object?>)result!;
+        Assert.That(list, Has.Count.EqualTo(3));
+        Assert.That(list[0], Is.EqualTo(1L));
+        Assert.That(list[1], Is.EqualTo(2L));
+        Assert.That(list[2], Is.EqualTo(3L));
+    }
+
+    [Test]
+    public async Task Script_Returns_Object()
+    {
+        await using var driver = await PlaywrightWebDriver.CreateAsync();
+
+        driver.Url = "file://" + Path.Combine(Environment.CurrentDirectory, "HtmlPages", "LocatorsTest.html");
+
+        var result = driver.ExecuteScript("return ({name: 'test', value: 42})");
+
+        Assert.That(result, Is.InstanceOf<Dictionary<string, object?>>());
+        var dict = (Dictionary<string, object?>)result!;
+        Assert.That(dict["name"], Is.EqualTo("test"));
+        Assert.That(dict["value"], Is.EqualTo(42L));
+    }
+
 #if !SeleniumVersion_3
     [Test]
     public async Task SwitchToDefaultContent()

@@ -29,7 +29,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
       - name: Cache NuGet
         uses: actions/cache@v5
         with:
@@ -38,7 +38,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
       - name: Run Pipeline
-        run: dotnet run -c Release --framework net8.0
+        run: dotnet run -c Release --framework net10.0
         working-directory: "TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline"
         env:
           NuGet__ApiKey: ${{ github.ref == 'refs/heads/main' && secrets.NUGET__APIKEY || null }}

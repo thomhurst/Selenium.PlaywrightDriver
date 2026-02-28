@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Playwright;
@@ -225,13 +226,13 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
     public object? ExecuteScript(string script, params object[] args)
     {
         script = ConvertScript(script, args);
-        
+
         if (CurrentFrameLocators.Any())
         {
-            return CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously();
+            return ConvertResult(CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously());
         }
-            
-        return CurrentPage.EvaluateAsync(script, args).Synchronously();
+
+        return ConvertResult(CurrentPage.EvaluateAsync(script, args).Synchronously());
     }
 
 #if SeleniumVersion_4
@@ -244,13 +245,13 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
     public object? ExecuteAsyncScript(string script, params object[] args)
     {
         script = ConvertScript(script, args);
-        
+
         if (CurrentFrameLocators.Any())
         {
-            return CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously();
+            return ConvertResult(CurrentFrameLocators.Last().Owner.EvaluateAsync(script, args).Synchronously());
         }
-            
-        return CurrentPage.EvaluateAsync(script, args).Synchronously();
+
+        return ConvertResult(CurrentPage.EvaluateAsync(script, args).Synchronously());
     }
 
     internal PlaywrightWebDriver NewPage()
@@ -278,6 +279,54 @@ public class PlaywrightWebDriver : IWebDriver, IJavaScriptExecutor, IAsyncDispos
         await Context.DisposeAsync();
         await Browser.DisposeAsync();
         Playwright.Dispose();
+    }
+
+    private static object? ConvertResult(object? result)
+    {
+        if (result is JsonElement jsonElement)
+        {
+            return ConvertJsonElement(jsonElement);
+        }
+
+        return result;
+    }
+
+    private static object? ConvertJsonElement(JsonElement element)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Null:
+            case JsonValueKind.Undefined:
+                return null;
+            case JsonValueKind.True:
+                return true;
+            case JsonValueKind.False:
+                return false;
+            case JsonValueKind.String:
+                return element.GetString();
+            case JsonValueKind.Number:
+                if (element.TryGetInt64(out var longValue))
+                {
+                    return longValue;
+                }
+                return element.GetDouble();
+            case JsonValueKind.Array:
+                var list = new List<object?>();
+                foreach (var item in element.EnumerateArray())
+                {
+                    list.Add(ConvertJsonElement(item));
+                }
+                return new ReadOnlyCollection<object?>(list);
+            case JsonValueKind.Object:
+                var dict = new Dictionary<string, object?>();
+                foreach (var property in element.EnumerateObject())
+                {
+                    dict[property.Name] = ConvertJsonElement(property.Value);
+                }
+                return dict;
+            default:
+                return element.ToString();
+        }
     }
 
     private static string ConvertScript(string script, object[] args)

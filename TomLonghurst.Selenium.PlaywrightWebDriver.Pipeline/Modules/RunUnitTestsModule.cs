@@ -1,20 +1,15 @@
+using ModularPipelines;
 using ModularPipelines.Context;
-using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
-using ModularPipelines.Git.Extensions;
-using ModularPipelines.Extensions;
-using ModularPipelines.Models;
-using ModularPipelines.Modules;
-using File = ModularPipelines.FileSystem.File;
+using ModularPipelines.FileSystem;
 
 namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules;
 
 public class RunUnitTestsModule : Module<List<CommandResult>>
 {
-    protected override async Task<List<CommandResult>?> ExecuteAsync(IModuleContext context, CancellationToken cancellationToken)
+    protected override async Task<List<CommandResult>> ExecuteAsync(IModuleContext context, CancellationToken cancellationToken)
     {
-        var projectFile = context.Git()
-            .RootDirectory
+        var projectFile = (await context.Tools.Git.Information.GetRequiredInfoAsync(cancellationToken)).Root
             .AssertExists()
             .FindFile(x => x.Name == "TomLonghurst.Selenium.PlaywrightWebDriver.Tests.csproj")
             .AssertExists();
@@ -29,18 +24,14 @@ public class RunUnitTestsModule : Module<List<CommandResult>>
     }
 
     private static async Task<CommandResult> Run(IModuleContext context, CancellationToken cancellationToken,
-        File unitTestProjectFile, bool isV3)
+        FilePath unitTestProjectFile, bool isV3)
     {
-        var dotNetTestOptions = new DotNetTestOptions
+        var dotNetTestOptions = new DotNetTestVstestOptions
         {
-            Arguments = new[] { unitTestProjectFile.Path },
+            ProjectSolution = unitTestProjectFile.Path,
+            Properties = isV3 ? [new KeyValue("SeleniumVersion", "3")] : null,
         };
 
-        if (isV3)
-        {
-            dotNetTestOptions.Properties = new[] { new KeyValue("SeleniumVersion", "3") };
-        }
-
-        return await context.DotNet().Test(dotNetTestOptions, cancellationToken: cancellationToken);
+        return await context.Tools.DotNet.TestVstestAsync(dotNetTestOptions, cancellationToken: cancellationToken);
     }
 }

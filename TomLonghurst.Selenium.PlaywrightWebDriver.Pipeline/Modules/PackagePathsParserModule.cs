@@ -1,14 +1,13 @@
-using ModularPipelines.Attributes;
+using ModularPipelines;
 using ModularPipelines.Context;
-using ModularPipelines.Modules;
-using File = ModularPipelines.FileSystem.File;
+using ModularPipelines.FileSystem;
 
 namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules;
 
 [DependsOn<PackProjectsModule>]
-public class PackagePathsParserModule : Module<List<File>>
+public class PackagePathsParserModule : Module<List<FilePath>>
 {
-    protected override async Task<List<File>?> ExecuteAsync(IModuleContext context, CancellationToken cancellationToken)
+    protected override async Task<List<FilePath>> ExecuteAsync(IModuleContext context, CancellationToken cancellationToken)
     {
         var packPackagesModuleResult = await context.GetModule<PackProjectsModule>();
 
@@ -16,7 +15,7 @@ public class PackagePathsParserModule : Module<List<File>>
             .Select(x => x.StandardOutput)
             .Select(x => x.Split("Successfully created package '")[1])
             .Select(x => x.Split("'.")[0])
-            .Select(x => new File(x))
+            .Select(x => new FilePath(x))
             .ToList();
     }
 }

@@ -1,13 +1,10 @@
 using EnumerableAsyncProcessor.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ModularPipelines.Attributes;
+using ModularPipelines;
 using ModularPipelines.Context;
-using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
-using ModularPipelines.Git.Attributes;
-using ModularPipelines.Models;
-using ModularPipelines.Modules;
+using ModularPipelines.Git;
 using TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Settings;
 
 namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules;
@@ -15,7 +12,7 @@ namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules;
 [DependsOn<RunUnitTestsModule>]
 [DependsOn<PackagePathsParserModule>]
 [RunOnlyOnBranch("main")]
-public class UploadPackagesToNugetModule : Module<CommandResult[]>
+public class UploadPackagesToNugetModule : Module<CommandResult[]?>
 {
     private readonly IOptions<NuGetSettings> _nugetSettings;
 
@@ -50,9 +47,8 @@ public class UploadPackagesToNugetModule : Module<CommandResult[]>
         var packagePaths = await context.GetModule<PackagePathsParserModule>();
 
         return await packagePaths.ValueOrDefault!
-            .SelectAsync(async nugetFile => await context.DotNet().Nuget.Push(new DotNetNugetPushOptions
+            .SelectAsync(async nugetFile => await context.Tools.DotNet.NuGet.PushAsync(new DotNetNuGetPushOptions([nugetFile])
             {
-                Path = nugetFile,
                 Source = "https://api.nuget.org/v3/index.json",
                 ApiKey = _nugetSettings.Value.ApiKey!,
             }, cancellationToken: cancellationToken), cancellationToken: cancellationToken)

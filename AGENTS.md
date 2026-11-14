@@ -25,7 +25,7 @@ dotnet test
 dotnet test --filter "FullyQualifiedName~TestMethodName"
 
 # Run the full CI pipeline (build + test + pack)
-dotnet run -c Release --framework net8.0 --project TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline
+dotnet run -c Release --framework net11.0 --project TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline
 
 # Build for Selenium v3
 dotnet build -p:SeleniumVersion=3

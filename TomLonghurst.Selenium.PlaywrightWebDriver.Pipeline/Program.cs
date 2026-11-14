@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ModularPipelines;
-using ModularPipelines.Extensions;
 using TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules;
 using TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules.LocalMachine;
 using TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Settings;
@@ -35,5 +34,4 @@ await pipelineBuilder
     .AddModule<PackProjectsModule>()
     .AddModule<PackageFilesRemovalModule>()
     .AddModule<PackagePathsParserModule>()
-    .Build()
     .RunAsync();

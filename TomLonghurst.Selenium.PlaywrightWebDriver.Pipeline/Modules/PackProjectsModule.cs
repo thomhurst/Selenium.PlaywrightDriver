@@ -1,13 +1,8 @@
 using EnumerableAsyncProcessor.Extensions;
-using ModularPipelines.Attributes;
+using ModularPipelines;
 using ModularPipelines.Context;
-using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
-using ModularPipelines.Extensions;
-using ModularPipelines.Git.Extensions;
-using ModularPipelines.Models;
-using ModularPipelines.Modules;
-using File = ModularPipelines.FileSystem.File;
+using ModularPipelines.FileSystem;
 
 namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules;
 
@@ -16,12 +11,11 @@ namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules;
 [DependsOn<RunUnitTestsModule>]
 public class PackProjectsModule : Module<CommandResult[]>
 {
-    protected override async Task<CommandResult[]?> ExecuteAsync(IModuleContext context, CancellationToken cancellationToken)
+    protected override async Task<CommandResult[]> ExecuteAsync(IModuleContext context, CancellationToken cancellationToken)
     {
         var packageVersion = await context.GetModule<NugetVersionGeneratorModule>();
 
-        var projectFile = context.Git()
-            .RootDirectory
+        var projectFile = (await context.Tools.Git.Information.GetRequiredInfoAsync(cancellationToken)).Root
             .AssertExists()
             .FindFile(x => x.Name == "TomLonghurst.Selenium.PlaywrightWebDriver.csproj")
             .AssertExists();
@@ -33,9 +27,9 @@ public class PackProjectsModule : Module<CommandResult[]>
         }.ToArray();
     }
 
-    private static async Task<CommandResult> PackV4(IModuleContext context, CancellationToken cancellationToken, File projectFile, ModuleResult<string?> packageVersion)
+    private static async Task<CommandResult> PackV4(IModuleContext context, CancellationToken cancellationToken, FilePath projectFile, ModuleResult<string> packageVersion)
     {
-        return await context.DotNet().Pack(new DotNetPackOptions
+        return await context.Tools.DotNet.PackAsync(new DotNetPackOptions
         {
             ProjectSolution = projectFile.Path,
             Configuration = "Release",
@@ -48,9 +42,9 @@ public class PackProjectsModule : Module<CommandResult[]>
         }, cancellationToken: cancellationToken);
     }
 
-    private static async Task<CommandResult> PackV3(IModuleContext context, CancellationToken cancellationToken, File projectFile, ModuleResult<string?> packageVersion)
+    private static async Task<CommandResult> PackV3(IModuleContext context, CancellationToken cancellationToken, FilePath projectFile, ModuleResult<string> packageVersion)
     {
-        return await context.DotNet().Pack(new DotNetPackOptions
+        return await context.Tools.DotNet.PackAsync(new DotNetPackOptions
         {
             ProjectSolution = projectFile.Path,
             Configuration = "Release",

@@ -1,19 +1,16 @@
 using EnumerableAsyncProcessor.Extensions;
 using Microsoft.Extensions.Logging;
-using ModularPipelines.Attributes;
+using ModularPipelines;
 using ModularPipelines.Context;
-using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
-using ModularPipelines.Extensions;
-using ModularPipelines.Models;
-using ModularPipelines.Modules;
+using ModularPipelines.FileSystem;
 
 namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules.LocalMachine;
 
 [DependsOn<AddLocalNugetSourceModule>]
 [DependsOn<PackagePathsParserModule>]
 [DependsOn<CreateLocalNugetFolderModule>]
-[RunOnLinuxOnly]
+[RunIf<OnLinux>]
 public class UploadPackagesToLocalNuGetModule : Module<CommandResult[]>
 {
     /// <inheritdoc/>
@@ -30,15 +27,14 @@ public class UploadPackagesToLocalNuGetModule : Module<CommandResult[]>
     }
 
     /// <inheritdoc/>
-    protected override async Task<CommandResult[]?> ExecuteAsync(IModuleContext context, CancellationToken cancellationToken)
+    protected override async Task<CommandResult[]> ExecuteAsync(IModuleContext context, CancellationToken cancellationToken)
     {
         var localRepoLocation = await context.GetModule<CreateLocalNugetFolderModule>();
         var packagePaths = await context.GetModule<PackagePathsParserModule>();
 
         return await packagePaths.ValueOrDefault!
-            .SelectAsync(async nugetFile => await context.DotNet().Nuget.Push(new DotNetNugetPushOptions
+            .SelectAsync(async nugetFile => await context.Tools.DotNet.NuGet.PushAsync(new DotNetNuGetPushOptions([nugetFile])
             {
-                Path = nugetFile,
                 Source = localRepoLocation.ValueOrDefault.AssertExists(),
             }, cancellationToken: cancellationToken), cancellationToken: cancellationToken)
             .ProcessOneAtATime();

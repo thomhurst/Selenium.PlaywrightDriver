@@ -1,20 +1,17 @@
+using ModularPipelines;
 using ModularPipelines.Context;
-using ModularPipelines.Git.Extensions;
-using ModularPipelines.Modules;
 
 namespace TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline.Modules;
 
 public class PackageFilesRemovalModule : Module
 {
-    protected override async Task ExecuteModuleAsync(IModuleContext context, CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(IModuleContext context, CancellationToken cancellationToken)
     {
-        var packageFiles = context.Git().RootDirectory.GetFiles(path => path.Extension is ".nupkg");
+        var packageFiles = (await context.Tools.Git.Information.GetRequiredInfoAsync(cancellationToken)).Root.GetFiles(path => path.Extension is ".nupkg");
 
         foreach (var packageFile in packageFiles)
         {
             packageFile.Delete();
         }
-
-        await Task.CompletedTask;
     }
 }

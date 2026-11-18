@@ -20,6 +20,9 @@ jobs:
   pipeline:
     environment: ${{ github.ref == 'refs/heads/main' && 'Production' || 'Pull Requests' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
 
     steps:
       - uses: actions/checkout@v7.0.1
@@ -37,9 +40,16 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+      - name: NuGet login
+        if: ${{ github.ref == 'refs/heads/main' && github.event.inputs.publish-packages == 'true' }}
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
       - name: Run Pipeline
         run: dotnet run -c Release --framework net10.0
         working-directory: "TomLonghurst.Selenium.PlaywrightWebDriver.Pipeline"
         env:
-          NuGet__ApiKey: ${{ github.ref == 'refs/heads/main' && secrets.NUGET__APIKEY || null }}
+          NuGet__ApiKey: ${{ steps.login.outputs.NUGET_API_KEY }}
           NuGet__ShouldPublish: ${{ github.event.inputs.publish-packages || false }}
